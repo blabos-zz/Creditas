@@ -1,0 +1,71 @@
+DESAFIO CREDITAS
+
+1. Introdução
+
+O cenário apresentado descreve uma situação onde um código legado não é
+robusto nem extensível, o que aumenta os custos e os riscos de manutenção,
+dificultando a adição de novas features.
+
+2. Descrição da Solução
+
+O trecho de código referenciado, tem como função tratar um determiado
+pedido, disparando as ações adequadas. Isto é conhecido como dispatcher.
+
+A solução apresentada consiste num dispatcher 'Creditas::Dispatcher', que
+contém uma tabela de regras, de modo que essas regras possam ser adicionadas
+e removidas conforme necessário, sem interferir no processamento das outras
+regras.
+
+As regras específicas são desenvolvidas como classes filhas de uma regra
+base 'Creditas::Dispatcher::Rule', e adicionadas ao dispatcher por meio do
+seu método 'Creditas::Dispatcher::install_rule()'.
+
+Destaque para a classe 'Creditas::Dispatcher::Rule::Book' que faz quase a
+mesma coisa que a classe 'Creditas::Dispatcher::Rule::PhysicalItem', sendo
+portanto, criada como uma especialização da mesma.
+
+Finalmente, cada pedido possui um atributo 'class', onde cada valor é associado
+a uma determinada regra, de modo que o dispatcher possa rotear corretamente
+cada pedido para sua respectiva regra.
+
+Essa solução permite que novas regras sejam adicionadas e removidas com
+facilidade e de forma independente umas das outras.
+
+3. Executando o Código
+
+Você vai precisar do Perl 5.16 instalado, além do módulo Carton, que vai
+instalar as dependências (Moo e seus filhotes);
+
+3.1 Preparação do Ambiente
+
+> tar -xvzf Creditas-1.00.tar.gz
+> cd Creditas
+> carton install
+
+3.2 Execução
+
+O pacote contém um script 'bin/app' com o exemplo onde é mostrada a
+instanciação e execução do dispatcher.
+
+> carton exec -- perl -Ilib ./bin/app
+> ==> System:
+> Invalid rule 'none' for order '34'
+
+Esta linha apresenta o processamento de um pedido com uma classe
+inválida 'none'. Adicione os nomes das classes para verificar as quatro
+condições descritas no exercício: 'physical_item', 'subscription', 'book' e
+'media':
+
+> carton exec -- perl -Ilib ./bin/app physical_item
+> ==> System:
+> This is a shipping label for order '34'
+
+> carton exec -- perl -Ilib ./bin/app physical_item
+> ==> System:
+> Subscription for order 34 successfully activated
+>
+> ==> User:
+> Dear Blabos de Blebe,
+> Your service subscription has been successfully activated.
+
+

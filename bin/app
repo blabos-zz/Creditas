@@ -1,0 +1,31 @@
+#! perl
+
+use strict;
+use warnings;
+use 5.016;
+
+use Creditas::Dispatcher::Rule::Media;
+use Creditas::Dispatcher::Rule::Book;
+use Creditas::Dispatcher::Rule::Subscription;
+use Creditas::Dispatcher::Rule::PhysicalItem;
+use Creditas::Dispatcher;
+
+my $dispatcher = Creditas::Dispatcher->new;
+
+$dispatcher->install_rule( Creditas::Dispatcher::Rule::PhysicalItem->new );
+$dispatcher->install_rule( Creditas::Dispatcher::Rule::Subscription->new );
+$dispatcher->install_rule( Creditas::Dispatcher::Rule::Book->new );
+$dispatcher->install_rule( Creditas::Dispatcher::Rule::Media->new );
+
+my $order = {
+    id    => 34,
+    class => $ARGV[0] || 'none',
+    owner => {
+        name    => 'Blabos de Blebe',
+        address => 'rua daqui, 123',
+    },
+};
+
+$dispatcher->process_order($order);
+
+# PODNAME: Creditas Dispatcher App
